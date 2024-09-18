@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatGPT 챗봇</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .chat-container {
+            max-width: 600px;
+            width: 100%;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .chat-box {
+            height: 600px;
+            overflow-y: scroll;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .message {
+            padding: 8px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .message.user {
+            background-color: #d1ecf1;
+            text-align: right;
+        }
+        .message.bot {
+            background-color: #e2e3e5;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <h3 class="text-center">ChatGPT 챗봇</h3>
+    <div id="chatBox" class="chat-box">
+        <!-- 대화 내용이 여기에 추가됩니다 -->
+    </div>
+
+    <div class="input-group">
+        <input id="userInput" type="text" class="form-control" placeholder="메시지를 입력하세요..." aria-label="Chat message">
+        <div class="input-group-append">
+            <button id="sendBtn" class="btn btn-primary">보내기</button>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS and dependencies (jQuery and Popper.js) -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#sendBtn').click(function () {
+            sendMessage();
+        });
+
+        // 엔터 키로도 메시지 전송
+        $('#userInput').keypress(function (e) {
+            if (e.which == 13) {
+                sendMessage();
+            }
+        });
+
+        function sendMessage() {
+            var userInput = $('#userInput').val();
+            if (userInput.trim() !== "") {
+                // 사용자 메시지를 화면에 추가
+                $('#chatBox').append('<div class="message user">' + userInput + '</div>');
+
+                // 서버로 메시지 보내기
+                $.ajax({
+                    url: '/chat/send',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ message: userInput }),
+                    success: function(response) {
+                        // ChatGPT 응답을 화면에 추가
+                        $('#chatBox').append('<div class="message bot">' + response + '</div>');
+
+                        // 스크롤을 대화창의 맨 아래로 이동
+                        $('#chatBox').scrollTop($('#chatBox')[0].scrollHeight);
+                    },
+                    error: function() {
+                        $('#chatBox').append('<div class="message bot">Error: 메시지를 전송할 수 없습니다.</div>');
+                    }
+                });
+
+                // 입력 필드 초기화
+                $('#userInput').val('');
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
