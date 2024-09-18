@@ -1,5 +1,7 @@
 plugins {
     id 'java'
+    id 'org.springframework.boot' version '3.1.0'
+    id 'io.spring.dependency-management' version '1.1.0'
 }
 
 group = 'org.example'
@@ -10,12 +12,31 @@ repositories {
 }
 
 dependencies {
+    // Spring Web 라이브러리 (Rest API 기능 제공)
     implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // Jackson 라이브러리 (JSON 직렬화 및 역직렬화)
     implementation 'com.fasterxml.jackson.core:jackson-databind'
-    implementation 'com.squareup.okhttp3:okhttp:4.9.1'
+
+    // OkHttp3 클라이언트 라이브러리 (HTTP 요청 전송)
+    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+
+    // Lombok (게터/세터 자동 생성, 가독성 개선)
+    compileOnly 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.34'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
 
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.mockito:mockito-core:3.7.7'
+    testImplementation 'org.mockito:mockito-junit-jupiter:3.7.7'
+    testImplementation 'org.springframework:spring-test'
+
+    // Hamcrest for matchers
+    testImplementation 'org.hamcrest:hamcrest:2.2'
+
 }
 
 test {
